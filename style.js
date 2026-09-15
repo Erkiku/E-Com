@@ -66,6 +66,7 @@ function renderCart() {
     }),
   );
   updateTotals();
+  if (!$("#summaryModal").hidden) renderSummary();
 }
 
 function changeQuantity(id, amount) {
@@ -83,14 +84,19 @@ function buyNow(id) {
 
 function renderSummary() {
   const entries = cartEntries();
-  $("#summaryContent").innerHTML = entries.length
-    ? `<div class="info-items">${entries.map(({ product, quantity }) => `<div class="info-item"><span>${product.name} × ${quantity}</span><strong>${money(product.price * quantity)}</strong></div>`).join("")}</div><div class="info-total"><span>Current total</span><strong>${$("#total").textContent}</strong></div><button class="primary-button info-continue" type="button">Continue shopping <span>↗</span></button>`
+  if (entries.length) {
+    $("#summaryContent").innerHTML = `<p class="summary-status">Current order</p><div class="info-items">${entries.map(({ product, quantity }) => `<div class="info-item"><span>${product.name} × ${quantity}</span><strong>${money(product.price * quantity)}</strong></div>`).join("")}</div><div class="summary-breakdown"><div><span>Subtotal</span><strong>${$("#subtotal").textContent}</strong></div><div><span>Tax</span><strong>${$("#tax").textContent}</strong></div>${state.promo ? `<div><span>Discount</span><strong>-${money(Number($("#discount").textContent.replace(/[^0-9.]/g, "")))}</strong></div>` : ""}</div><div class="info-total"><span>Current total</span><strong>${$("#total").textContent}</strong></div><button class="primary-button info-continue" data-close-info="summaryModal" type="button">Continue shopping <span>↗</span></button>`;
+    return;
+  }
+  const latest = state.transactions[0];
+  $("#summaryContent").innerHTML = latest
+    ? `<p class="summary-status">Last completed order · ${latest.id}</p><div class="info-items">${(latest.lines || []).map((line) => `<div class="info-item"><span>${line.name} × ${line.quantity}</span><strong>${money(line.total)}</strong></div>`).join("")}</div><div class="summary-breakdown"><div><span>Subtotal</span><strong>${money(latest.subtotal)}</strong></div><div><span>Tax</span><strong>${money(latest.tax)}</strong></div>${latest.discount ? `<div><span>Discount</span><strong>-${money(latest.discount)}</strong></div>` : ""}</div><div class="info-total"><span>Order total</span><strong>${money(latest.total)}</strong></div><p class="info-empty">Your bag is empty. Add another product to start a new order.</p>`
     : '<p class="info-empty">Your order summary is empty. Add a product to begin.</p>';
 }
 
 function renderHistory() {
   $("#historyContent").innerHTML = state.transactions.length
-    ? state.transactions.map((transaction) => `<div class="history-item"><div><strong>${transaction.id}</strong><small>${transaction.date}</small></div><strong>${money(transaction.total)}</strong><span>${transaction.items} item${transaction.items === 1 ? "" : "s"}</span></div>`).join("")
+    ? state.transactions.map((transaction) => `<div class="history-item"><div><strong>${transaction.id}</strong><small>${transaction.date}</small></div><strong>${money(transaction.total)}</strong><span>${(transaction.lines || []).map((line) => `${line.name} × ${line.quantity}`).join(", ") || `${transaction.items} item${transaction.items === 1 ? "" : "s"}`}</span></div>`).join("")
     : '<p class="info-empty">No completed transactions yet.</p>';
 }
 
@@ -111,6 +117,7 @@ function updateTotals() {
   $("#discountLine").hidden = discount === 0;
   $("#tax").textContent = money((subtotal - discount) * 0.08);
   $("#total").textContent = money((subtotal - discount) * 1.08);
+  if (!$("#summaryModal").hidden) renderSummary();
 }
 
 function toggleCart(open) {
@@ -211,6 +218,8 @@ $("#productGrid").addEventListener("click", (event) => {
   if (buyButton) buyNow(Number(buyButton.dataset.buy));
 });
 document.addEventListener("click", (event) => {
+  const closeInfo = event.target.closest("[data-close-info]");
+  if (closeInfo) $("#" + closeInfo.dataset.closeInfo).hidden = true;
   if (event.target.matches(".next-step")) {
     if (validateStep(state.step)) {
       if (state.step === 2) {
@@ -251,9 +260,14 @@ $("#checkoutForm").addEventListener("submit", (event) => {
     $("#checkoutTitle").hidden = true;
     $(".checkout-progress").hidden = true;
     $("#successState").hidden = false;
-    const total = Number($("#total").textContent.replace("₹", ""));
-    const items = cartEntries().reduce((sum, entry) => sum + entry.quantity, 0);
-    state.transactions.unshift({ id: `EC-${Date.now().toString().slice(-6)}`, date: new Date().toLocaleDateString("en-IN"), total, items });
+    const completedEntries = cartEntries();
+    const subtotal = completedEntries.reduce((sum, entry) => sum + entry.product.price * entry.quantity, 0);
+    const discount = subtotal * state.promo;
+    const tax = (subtotal - discount) * 0.08;
+    const total = (subtotal - discount) * 1.08;
+    const items = completedEntries.reduce((sum, entry) => sum + entry.quantity, 0);
+    const lines = completedEntries.map(({ product, quantity }) => ({ name: product.name, quantity, total: product.price * quantity }));
+    state.transactions.unshift({ id: `EC-${Date.now().toString().slice(-6)}`, date: new Date().toLocaleDateString("en-IN"), total, subtotal, discount, tax, items, lines });
     localStorage.setItem("ecomTransactions", JSON.stringify(state.transactions.slice(0, 20)));
     state.cart = {};
     renderCart();
