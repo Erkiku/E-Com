@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "name": "Field Notes Backpack",
+    "category": "Everyday carry",
+    "price": 68,
+    "rating": 4.9,
+    "color": "#d9e7dc",
+    "icon": "🎒",
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=85",
+    "description": "A weather-ready canvas pack for workdays and weekends."
+  },
+  {
+    "id": 2,
+    "name": "Studio Headphones",
+    "category": "Audio",
+    "price": 129,
+    "rating": 4.8,
+    "color": "#e8d9cd",
+    "icon": "🎧",
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85",
+    "description": "Warm, detailed sound with all-day comfort."
+  },
+  {
+    "id": 3,
+    "name": "Ceramic Pour-over",
+    "category": "Kitchen",
+    "price": 42,
+    "rating": 4.7,
+    "color": "#dce2ee",
+    "icon": "☕",
+    "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=85",
+    "description": "Make a slow morning ritual from every cup."
+  },
+  {
+    "id": 4,
+    "name": "Alpine Knit",
+    "category": "Apparel",
+    "price": 76,
+    "rating": 4.9,
+    "color": "#eee2ba",
+    "icon": "🧶",
+    "image": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=900&q=85",
+    "description": "Soft merino warmth with a clean, easy silhouette."
+  },
+  {
+    "id": 5,
+    "name": "Desk Light No. 2",
+    "category": "Workspace",
+    "price": 94,
+    "rating": 4.6,
+    "color": "#d8e8e4",
+    "icon": "💡",
+    "image": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=85",
+    "description": "A considered glow for focused evenings and quiet corners."
+  },
+  {
+    "id": 6,
+    "name": "Trail Bottle",
+    "category": "Outdoors",
+    "price": 36,
+    "rating": 4.8,
+    "color": "#e5d8e9",
+    "icon": "🫗",
+    "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=900&q=85",
+    "description": "Insulated stainless steel, ready for the long way round."
+  }
+]
