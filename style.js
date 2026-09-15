@@ -194,7 +194,20 @@ function openCheckout() {
   $("#checkoutTitle").hidden = false;
   $(".checkout-progress").hidden = false;
   $("#successState").hidden = true;
+  $("#checkoutPromoCode").value = state.promo ? "SAVE20" : "";
+  $("#checkoutPromoMessage").textContent = state.promo ? "20% discount applied." : "";
+  $("#checkoutPromoMessage").className = state.promo ? "success-text" : "";
   showStep(1);
+}
+
+function applyPromoCode(inputSelector, messageSelector) {
+  const code = $(inputSelector).value.trim().toUpperCase();
+  state.promo = code === "SAVE20" ? 0.2 : 0;
+  $(messageSelector).textContent = state.promo
+    ? "20% discount applied."
+    : "That code is not valid.";
+  $(messageSelector).className = state.promo ? "success-text" : "error-text";
+  updateTotals();
 }
 
 document.addEventListener("input", (event) => {
@@ -244,13 +257,10 @@ $("#doneButton").addEventListener("click", () => {
   $("#checkoutModal").hidden = true;
 });
 $("#applyPromo").addEventListener("click", () => {
-  const code = $("#promoCode").value.trim().toUpperCase();
-  state.promo = code === "SAVE20" ? 0.2 : 0;
-  $("#promoMessage").textContent = state.promo
-    ? "20% discount applied."
-    : "That code is not valid.";
-  $("#promoMessage").className = state.promo ? "success-text" : "error-text";
-  updateTotals();
+  applyPromoCode("#promoCode", "#promoMessage");
+});
+$("#applyCheckoutPromo").addEventListener("click", () => {
+  applyPromoCode("#checkoutPromoCode", "#checkoutPromoMessage");
 });
 $("#checkoutForm").addEventListener("submit", (event) => {
   event.preventDefault();
