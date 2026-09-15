@@ -36,6 +36,7 @@ function renderCart() {
   const entries = cartEntries();
   const count = entries.reduce((sum, entry) => sum + entry.quantity, 0);
   $("#cartCount").textContent = count;
+  $("#summaryCount").textContent = count;
   $("#drawerCount").textContent = `(${count})`;
   $("#emptyCart").hidden = entries.length > 0;
   $("#cartSummary").hidden = entries.length === 0;
