@@ -17,6 +17,8 @@
       >
       <nav class="main-nav" aria-label="Main navigation">
         <a href="#shop">Shop</a><a href="#catalog">Our edit</a>
+        <button class="nav-action" id="summaryTrigger" type="button">Order summary</button>
+        <button class="nav-action" id="historyTrigger" type="button">Transaction history</button>
       </nav>
       <button
         class="cart-trigger"
@@ -156,23 +158,37 @@
           <small id="promoMessage"></small>
         </div>
         <div class="summary-line">
-          <span>Subtotal</span><strong id="subtotal">$0.00</strong>
+          <span>Subtotal</span><strong id="subtotal">₹0.00</strong>
         </div>
         <div class="summary-line">
           <span>Estimated tax <small>(8%)</small></span
-          ><strong id="tax">$0.00</strong>
+          ><strong id="tax">₹0.00</strong>
         </div>
         <div class="summary-line discount-line" id="discountLine" hidden>
-          <span>Discount</span><strong id="discount">-$0.00</strong>
+          <span>Discount</span><strong id="discount">-₹0.00</strong>
         </div>
         <div class="summary-total">
-          <span>Total</span><strong id="total">$0.00</strong>
+          <span>Total</span><strong id="total">₹0.00</strong>
         </div>
         <button class="primary-button" id="checkoutButton" type="button">
           Continue to checkout <span>↗</span>
         </button>
       </div>
     </aside>
+    <section class="info-modal" id="summaryModal" hidden aria-labelledby="summaryTitle">
+      <div class="info-card">
+        <button class="icon-button info-close" data-close-info="summaryModal" type="button" aria-label="Close order summary">×</button>
+        <p class="eyebrow">Live basket</p><h2 id="summaryTitle">Order summary</h2>
+        <div id="summaryContent"></div>
+      </div>
+    </section>
+    <section class="info-modal" id="historyModal" hidden aria-labelledby="historyTitle">
+      <div class="info-card">
+        <button class="icon-button info-close" data-close-info="historyModal" type="button" aria-label="Close transaction history">×</button>
+        <p class="eyebrow">Your activity</p><h2 id="historyTitle">Transaction history</h2>
+        <div id="historyContent"></div>
+      </div>
+    </section>
     <section
       class="checkout-modal"
       id="checkoutModal"

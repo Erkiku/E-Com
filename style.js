@@ -1,5 +1,5 @@
-const state = { products: [], cart: {}, promo: 0, step: 1 };
-const money = (value) => `$${value.toFixed(2)}`;
+const state = { products: [], cart: {}, promo: 0, step: 1, transactions: JSON.parse(localStorage.getItem("ecomTransactions") || "[]") };
+const money = (value) => `₹${value.toFixed(2)}`;
 const $ = (selector) => document.querySelector(selector);
 
 async function loadProducts() {
@@ -21,16 +21,6 @@ function renderProducts() {
 		</article>`,
     )
     .join("");
-  document
-    .querySelectorAll("[data-add]")
-    .forEach((button) =>
-      button.addEventListener("click", () =>
-        changeQuantity(Number(button.dataset.add), 1),
-      ),
-    );
-  document.querySelectorAll("[data-buy]").forEach((button) =>
-    button.addEventListener("click", () => buyNow(Number(button.dataset.buy))),
-  );
 }
 
 function cartEntries() {
@@ -89,6 +79,25 @@ function buyNow(id) {
   state.promo = 0;
   renderCart();
   openCheckout();
+}
+
+function renderSummary() {
+  const entries = cartEntries();
+  $("#summaryContent").innerHTML = entries.length
+    ? `<div class="info-items">${entries.map(({ product, quantity }) => `<div class="info-item"><span>${product.name} × ${quantity}</span><strong>${money(product.price * quantity)}</strong></div>`).join("")}</div><div class="info-total"><span>Current total</span><strong>${$("#total").textContent}</strong></div><button class="primary-button info-continue" type="button">Continue shopping <span>↗</span></button>`
+    : '<p class="info-empty">Your order summary is empty. Add a product to begin.</p>';
+}
+
+function renderHistory() {
+  $("#historyContent").innerHTML = state.transactions.length
+    ? state.transactions.map((transaction) => `<div class="history-item"><div><strong>${transaction.id}</strong><small>${transaction.date}</small></div><strong>${money(transaction.total)}</strong><span>${transaction.items} item${transaction.items === 1 ? "" : "s"}</span></div>`).join("")
+    : '<p class="info-empty">No completed transactions yet.</p>';
+}
+
+function openInfoModal(id) {
+  if (id === "summaryModal") renderSummary();
+  if (id === "historyModal") renderHistory();
+  $("#" + id).hidden = false;
 }
 
 function updateTotals() {
@@ -173,6 +182,11 @@ function showStep(step) {
 function openCheckout() {
   toggleCart(false);
   $("#checkoutModal").hidden = false;
+  $("#checkoutForm").hidden = false;
+  $("#checkoutKicker").hidden = false;
+  $("#checkoutTitle").hidden = false;
+  $(".checkout-progress").hidden = false;
+  $("#successState").hidden = true;
   showStep(1);
 }
 
@@ -189,6 +203,12 @@ document.addEventListener("input", (event) => {
       .slice(0, 4)
       .replace(/(.{2})/, "$1 / ");
   if (event.target.classList.contains("invalid")) validateStep(state.step);
+});
+$("#productGrid").addEventListener("click", (event) => {
+  const addButton = event.target.closest("[data-add]");
+  const buyButton = event.target.closest("[data-buy]");
+  if (addButton) changeQuantity(Number(addButton.dataset.add), 1);
+  if (buyButton) buyNow(Number(buyButton.dataset.buy));
 });
 document.addEventListener("click", (event) => {
   if (event.target.matches(".next-step")) {
@@ -231,10 +251,18 @@ $("#checkoutForm").addEventListener("submit", (event) => {
     $("#checkoutTitle").hidden = true;
     $(".checkout-progress").hidden = true;
     $("#successState").hidden = false;
+    const total = Number($("#total").textContent.replace("₹", ""));
+    const items = cartEntries().reduce((sum, entry) => sum + entry.quantity, 0);
+    state.transactions.unshift({ id: `EC-${Date.now().toString().slice(-6)}`, date: new Date().toLocaleDateString("en-IN"), total, items });
+    localStorage.setItem("ecomTransactions", JSON.stringify(state.transactions.slice(0, 20)));
     state.cart = {};
     renderCart();
   }
 });
+$("#summaryTrigger").addEventListener("click", () => openInfoModal("summaryModal"));
+$("#historyTrigger").addEventListener("click", () => openInfoModal("historyModal"));
+document.querySelectorAll("[data-close-info]").forEach((button) => button.addEventListener("click", () => { $("#" + button.dataset.closeInfo).hidden = true; }));
+document.querySelectorAll(".info-modal").forEach((modal) => modal.addEventListener("click", (event) => { if (event.target === modal) modal.hidden = true; }));
 loadProducts().catch(() => {
   $("#productGrid").innerHTML =
     '<p class="load-error">Products could not be loaded. Please refresh the page.</p>';

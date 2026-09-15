@@ -75,6 +75,21 @@ a {
   font-size: .75rem;
 }
 
+.nav-action {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: .75rem;
+  white-space: nowrap;
+}
+
+.nav-action:hover,
+.nav-action:focus-visible {
+  color: var(--accent);
+}
+
 .main-nav a:first-child {
   color: var(--accent);
 }
@@ -450,6 +465,44 @@ h1 em {
 .cart-drawer.open {
   transform: none;
 }
+
+.info-modal {
+  position: fixed;
+  z-index: 8;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(26, 34, 29, .48);
+  backdrop-filter: blur(5px);
+}
+
+.info-card {
+  width: min(520px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  position: relative;
+  padding: 42px;
+  background: #f9faf5;
+}
+
+.info-card h2 {
+  margin: 0 0 28px;
+  font: 2.6rem var(--serif);
+  letter-spacing: -.04em;
+}
+
+.info-close { position: absolute; top: 22px; right: 24px; }
+.info-items { border-top: 1px solid var(--line); }
+.info-item, .info-total { display: flex; justify-content: space-between; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: .75rem; }
+.info-item strong, .info-total strong { font: 11px var(--mono); white-space: nowrap; }
+.info-total { margin-bottom: 22px; border-bottom: 1px solid var(--ink); font-weight: 700; }
+.info-empty { color: var(--muted); font: 1.15rem/1.6 var(--serif); }
+.history-item { display: grid; grid-template-columns: 1fr auto; gap: 7px 18px; padding: 17px 0; border-bottom: 1px solid var(--line); font-size: .75rem; }
+.history-item div { display: flex; gap: 12px; align-items: baseline; }
+.history-item small, .history-item span { color: var(--muted); font-size: .65rem; }
+.history-item > strong { font: 11px var(--mono); }
+.history-item > span { grid-column: 1 / -1; }
 
 .drawer-header {
   display: flex;
@@ -835,12 +888,33 @@ h1 em {
 
 @media (max-width:700px) {
   .site-header {
-    height: 68px;
+    min-height: 104px;
+    height: auto;
     padding: 0 6vw;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 13px 18px;
+    align-content: center;
   }
 
   .main-nav {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-left: 0;
+    gap: 22px;
+    overflow-x: auto;
+    padding-bottom: 3px;
+    scrollbar-width: none;
+  }
+
+  .main-nav::-webkit-scrollbar {
     display: none;
+  }
+
+  .nav-action,
+  .main-nav a {
+    font-size: .68rem;
+  }
   }
 
   .hero {
@@ -940,5 +1014,13 @@ h1 em {
 
   .checkout-card {
     padding: 38px 25px;
+  }
+
+  .info-card {
+    padding: 34px 24px;
+  }
+
+  .info-card h2 {
+    font-size: 2.2rem;
   }
 }
