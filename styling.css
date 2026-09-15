@@ -46,7 +46,7 @@ a {
   padding: 0 5vw;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 24px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -70,8 +70,10 @@ a {
 
 .main-nav {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
   gap: 35px;
-  margin-left: 90px;
   font-size: .75rem;
 }
 
@@ -239,6 +241,8 @@ h1 em {
 
 .product-card {
   animation: rise .6s var(--delay) both;
+  display: grid;
+  grid-template-rows: 300px auto auto 1fr;
 }
 
 @keyframes rise {
@@ -315,7 +319,9 @@ h1 em {
   display: flex;
   justify-content: space-between;
   gap: 12px;
+  height: 67px;
   padding-top: 16px;
+  overflow: hidden;
 }
 
 .product-info h3 {
@@ -339,6 +345,7 @@ h1 em {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 40px;
   margin-top: 14px;
   padding: 11px 13px;
   border: 1px solid var(--ink);
@@ -364,7 +371,9 @@ h1 em {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 43px;
   padding-top: 12px;
+  overflow: hidden;
 }
 
 .product-meta span {
@@ -915,7 +924,6 @@ h1 em {
   .main-nav a {
     font-size: .68rem;
   }
-  }
 
   .hero {
     min-height: 620px;
@@ -963,6 +971,10 @@ h1 em {
   .product-grid {
     grid-template-columns: 1fr 1fr;
     gap: 38px 14px;
+  }
+
+  .product-card {
+    grid-template-rows: 210px auto auto 1fr;
   }
 
   .product-image {
